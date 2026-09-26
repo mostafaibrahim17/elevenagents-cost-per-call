@@ -1,0 +1,25 @@
+{
+  "name": "elevenagents-cost-per-call",
+  "version": "1.0.0",
+  "description": "Read, estimate and compare the real cost of an ElevenAgents voice call",
+  "scripts": {
+    "estimate": "tsx --env-file-if-exists=.env src/estimate.ts",
+    "call-cost": "tsx --env-file-if-exists=.env src/call-cost.ts",
+    "report": "tsx --env-file-if-exists=.env src/report.ts",
+    "create-agent": "tsx --env-file-if-exists=.env src/create-agent.ts",
+    "scripted-call": "tsx --env-file-if-exists=.env src/scripted-call.ts",
+    "typecheck": "tsc"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@elevenlabs/elevenlabs-js": "^2.69.0",
+    "ws": "^8.22.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@types/ws": "^8.18.1",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  },
+  "type": "module"
+}
