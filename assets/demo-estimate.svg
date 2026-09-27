@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="white-space:pre" viewBox="0 0 760 336" width="760" height="336" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+  <rect width="760" height="336" rx="10" fill="#0d1117" stroke="#30363d"/>
+  <rect width="760" height="34" rx="10" fill="#161b22"/>
+  <rect y="20" width="760" height="14" fill="#161b22"/>
+  <circle cx="22" cy="17" r="6" fill="#ff5f56"/>
+  <circle cx="42" cy="17" r="6" fill="#ffbd2e"/>
+  <circle cx="62" cy="17" r="6" fill="#27c93f"/>
+  <text x="380" y="22" fill="#8b949e" font-size="13" text-anchor="middle">npm run estimate  (no API key)</text>
+
+  <g font-size="14">
+    <text x="24" y="66" fill="#c9d1d9">$ npm run estimate</text>
+    <text x="24" y="92" fill="#8b949e">Prompt 4916 chars, 0 KB pages, RAG off, 4-minute call</text>
+
+    <text x="40" y="128" fill="#8b949e">model               per min   LLM, 4 min   all-in   LLM share</text>
+    <text x="40" y="156" fill="#c9d1d9">gemini-2.5-flash    $0.0028     $0.011     $0.37       3%</text>
+    <text x="40" y="180" fill="#c9d1d9">gpt-5-mini          $0.0050     $0.020     $0.37       5%</text>
+    <text x="40" y="204" fill="#c9d1d9">gemini-3.7-flash    $0.0143     $0.057     $0.41      14%</text>
+    <text x="40" y="228" fill="#c9d1d9">claude-haiku-4-5    $0.0191     $0.076     $0.43      18%</text>
+    <text x="40" y="252" fill="#c9d1d9">gpt-5.1             $0.0250     $0.100     $0.45      22%</text>
+    <text x="40" y="276" fill="#fbbf24">claude-sonnet-5     $0.0420     $0.168     $0.52      32%</text>
+
+    <text x="24" y="314" fill="#8b949e">A planning estimate. On the measured call it ran about two thirds high.</text>
+  </g>
+</svg>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" style="white-space:pre" viewBox="0 0 760 470" width="760" height="470" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+  <rect width="760" height="470" rx="10" fill="#0d1117" stroke="#30363d"/>
+  <rect width="760" height="34" rx="10" fill="#161b22"/>
+  <rect y="20" width="760" height="14" fill="#161b22"/>
+  <circle cx="22" cy="17" r="6" fill="#ff5f56"/>
+  <circle cx="42" cy="17" r="6" fill="#ffbd2e"/>
+  <circle cx="62" cy="17" r="6" fill="#27c93f"/>
+  <text x="380" y="22" fill="#8b949e" font-size="13" text-anchor="middle">npm run call-cost</text>
+
+  <g font-size="14">
+    <text x="24" y="66" fill="#c9d1d9">$ npm run call-cost -- conv_7401… --provider-llm 0.006</text>
+    <text x="24" y="92" fill="#8b949e">Conversation conv_7401…: 92s, 1.54 billed minutes</text>
+
+    <text x="24" y="128" fill="#fbbf24" font-weight="700">1 · The bill</text>
+    <text x="40" y="154" fill="#c9d1d9">Platform (list rate)</text><text x="330" y="154" fill="#c9d1d9">$0.123</text><text x="430" y="154" fill="#8b949e">record valued it at $0.102</text>
+    <text x="40" y="178" fill="#c9d1d9">LLM</text><text x="330" y="178" fill="#fbbf24">$0.0026</text><text x="430" y="178" fill="#8b949e">billed on initiated</text>
+    <text x="40" y="202" fill="#c9d1d9">Phone line (est.)</text><text x="330" y="202" fill="#c9d1d9">$0.017</text><text x="430" y="202" fill="#8b949e">Twilio, whole minutes</text>
+    <text x="40" y="226" fill="#ffffff" font-weight="700">All in</text><text x="330" y="226" fill="#4ade80" font-weight="700">$0.143</text><text x="430" y="226" fill="#8b949e">$0.093 per minute</text>
+
+    <text x="24" y="266" fill="#fbbf24" font-weight="700">2 · LLM tokens</text>
+    <text x="40" y="292" fill="#8b949e">                       fresh   cached   output</text>
+    <text x="40" y="316" fill="#c9d1d9">initiated (billed)     14833     4416      603</text>
+    <text x="40" y="340" fill="#c9d1d9">irreversible (heard)    9403     2953      519</text>
+    <text x="40" y="366" fill="#f87171">Billed input is 58% above what the caller heard.</text>
+
+    <text x="24" y="406" fill="#fbbf24" font-weight="700">3 · Same call on the raw APIs</text>
+    <text x="40" y="432" fill="#c9d1d9">stt $0.010 · tts $0.047 · llm $0.006 · phone $0.017</text>
+    <text x="40" y="456" fill="#4ade80">total $0.080 · platform gap $0.041 per minute</text>
+  </g>
+</svg>
