@@ -1,4 +1,8 @@
+import { existsSync } from "node:fs";
 import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
+
+// Load .env if there is one. process.loadEnvFile exists from Node 20.12.
+if (existsSync(".env")) process.loadEnvFile(".env");
 
 // List prices used for the all-in and raw-API figures. Check them before you
 // rely on them: they were read from the live pricing pages on 26 Sep 2026.
@@ -36,7 +40,8 @@ export type CallCost = {
   conversationId: string;
   seconds: number;
   billedMinutes: number;
-  platformUsd: number | null; // what the record valued the platform minutes at
+  platformUsd: number | null; // what the record valued all platform charges at
+  otherPlatformCategories: { category: string; quantity: number; usd: number }[]; // e.g. silence, burst
   platformAtListUsd: number; // billed minutes at the $0.08 list rate
   llmUsd: number | null;
   elevenLabsTotalUsd: number | null; // cost_fiat: platform + LLM, no phone line
@@ -53,15 +58,22 @@ export type CallCost = {
 };
 
 // Everything that matters about one call's bill, read from the conversation details endpoint.
-export async function callCost(conversationId: string): Promise<CallCost> {
-  const conv: any = await client().conversationalAi.conversations.get(conversationId);
+export async function callCost(conversationId: string, el: ElevenLabsClient = client()): Promise<CallCost> {
+  const conv: any = await el.conversationalAi.conversations.get(conversationId);
   const m = conv.metadata;
-  const c = m.charging ?? {};
-  const billedMinutes: number = c.platformUsage?.categoryUsage?.voice?.quantity ?? m.callDurationSecs / 60;
+  const c = m.charging ?? {}; // older or in-progress records may have no charging block
+  const categories: Record<string, { quantity?: number; price?: number }> = c.platformUsage?.categoryUsage ?? {};
+  const billedMinutes: number = categories.voice?.quantity ?? m.callDurationSecs / 60;
+  // Only voice minutes are priced at the list rate below. Anything else the record bills,
+  // such as silence (5% of the rate) or burst minutes, is listed as the record priced it.
+  const otherPlatformCategories = Object.entries(categories)
+    .filter(([k]) => k !== "voice")
+    .map(([category, v]) => ({ category, quantity: v.quantity ?? 0, usd: v.price ?? 0 }));
+  const otherUsd = otherPlatformCategories.reduce((n, o) => n + o.usd, 0);
   const initiated = sumTokens(c.llmUsage?.initiatedGeneration?.modelUsage);
   const irreversible = sumTokens(c.llmUsage?.irreversibleGeneration?.modelUsage);
   const phoneLineUsd = Math.ceil(m.callDurationSecs / 60) * RATES.twilioInboundPerMin;
-  const platformAtListUsd = billedMinutes * RATES.platformPerMin;
+  const platformAtListUsd = billedMinutes * RATES.platformPerMin + otherUsd;
   const perGeneration = (conv.transcript ?? [])
     .filter((t: any) => t.llmUsage?.modelUsage)
     .map((t: any) => {
@@ -74,6 +86,7 @@ export async function callCost(conversationId: string): Promise<CallCost> {
     seconds: m.callDurationSecs,
     billedMinutes,
     platformUsd: c.platformPrice ?? null,
+    otherPlatformCategories,
     platformAtListUsd,
     llmUsd: c.llmPrice ?? null,
     elevenLabsTotalUsd: m.costFiat ?? null,

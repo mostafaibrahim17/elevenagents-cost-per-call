@@ -1,5 +1,7 @@
 // Create the test agent used in the article: a support line with one webhook tool.
 // Creating an agent and a tool costs nothing. Calls to it use your plan's minutes.
+// The ElevenLabs CLI (@elevenlabs/cli) can manage the same agent as config files.
+// This uses the SDK so the whole project runs on one dependency.
 //
 //   npm run create-agent
 //   npm run create-agent -- --llm claude-sonnet-5
@@ -37,7 +39,9 @@ const tool: any = await el.conversationalAi.tools.create({
   } as any,
 });
 
-const agent = await el.conversationalAi.agents.create({
+let agent;
+try {
+  agent = await el.conversationalAi.agents.create({
   name: "Northwind support (cost test)",
   conversationConfig: {
     agent: {
@@ -54,7 +58,12 @@ const agent = await el.conversationalAi.agents.create({
     tts: { modelId: "eleven_flash_v2" as any },
     conversation: { maxDurationSeconds: 360 },
   },
-});
+  });
+} catch (err) {
+  // Don't leave an orphan tool behind if the agent can't be created.
+  await el.conversationalAi.tools.delete(tool.id).catch(() => {});
+  throw err;
+}
 
 console.log(`Tool:  ${tool.id}`);
 console.log(`Agent: ${agent.agentId}`);

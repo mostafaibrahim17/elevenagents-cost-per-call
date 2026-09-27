@@ -1,4 +1,8 @@
 node_modules/
 .env
+.env.*
+!.env.example
 out/
 *.pcm
+*.log
+.DS_Store

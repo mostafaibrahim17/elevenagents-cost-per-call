@@ -7,13 +7,17 @@ import WebSocket from "ws";
 import { client } from "./lib/cost.js";
 
 const agentId = process.argv[2];
-if (!agentId) throw new Error("Usage: npm run scripted-call -- <agent_id>");
+if (!agentId) {
+  console.error("Usage: npm run scripted-call -- <agent_id>");
+  process.exit(1);
+}
 
 const el = client();
 const SAMPLE_RATE = 16000; // pcm_16000, 16-bit mono, the agent's default input format
 const BYTES_PER_SEC = SAMPLE_RATE * 2;
 const CHUNK = BYTES_PER_SEC / 4; // stream 250 ms at a time, like a live microphone
 const t0 = Date.now();
+const HARD_LIMIT_MS = 5 * 60_000; // give up if the call runs past five minutes
 const log = (kind: string, text = "") => console.log(`[${((Date.now() - t0) / 1000).toFixed(1).padStart(5)}s] ${kind.padEnd(7)} ${text}`);
 
 // 1. Turn each customer line into audio once, and cache it.
@@ -43,8 +47,23 @@ let agentTurns = 0;
 let playbackEnds = 0; // when the agent's audio would finish playing, in ms
 let agentBytesPerSec = BYTES_PER_SEC;
 let pending: Buffer = Buffer.alloc(0);
+let closed = false;
+let closeReason = "";
 
+const opened = new Promise<void>((resolve, reject) => {
+  ws.once("open", () => resolve());
+  ws.once("error", reject);
+  setTimeout(() => reject(new Error("WebSocket didn't open within 15 seconds")), 15_000);
+});
 ws.on("open", () => ws.send(JSON.stringify({ type: "conversation_initiation_client_data" })));
+ws.on("close", (code, reason) => {
+  closed = true;
+  closeReason = `${code}${reason.length ? ` ${reason.toString()}` : ""}`;
+});
+ws.on("error", (err) => {
+  closed = true;
+  closeReason = err.message;
+});
 ws.on("message", (raw) => {
   const e = JSON.parse(raw.toString());
   switch (e.type) {
@@ -78,7 +97,7 @@ ws.on("message", (raw) => {
   }
 });
 
-// 3. Stream silence continuously, and a customer line when it's our turn.
+// 3. Stream silence continuously, and a customer line when it's the customer's turn.
 const pump = setInterval(() => {
   if (ws.readyState !== WebSocket.OPEN) return;
   let chunk: Buffer;
@@ -91,26 +110,52 @@ const pump = setInterval(() => {
 }, 250);
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const agentIsQuiet = (gapMs: number) => Date.now() > playbackEnds + gapMs;
+
+// Wait until the agent has produced a new response and finished playing it.
 async function waitForAgent(seen: number, timeoutMs: number, gapMs = 1000) {
   const end = Date.now() + timeoutMs;
-  while (Date.now() < end) {
-    if (agentTurns > seen && Date.now() > playbackEnds + gapMs) break;
+  while (Date.now() < end && !closed) {
+    if (agentTurns > seen && agentIsQuiet(gapMs)) return agentTurns;
     await sleep(100);
   }
+  if (!closed) log("WARN", `agent didn't finish a turn within ${timeoutMs / 1000}s, continuing`);
   return agentTurns;
 }
 
-await new Promise((r) => ws.once("open", r));
+function finish(code = 0) {
+  clearInterval(pump);
+  if (ws.readyState === WebSocket.OPEN) ws.close();
+  log("DONE", conversationId ? `conversation ${conversationId}` : "no conversation ID received");
+  if (conversationId) console.log(`\nThe billing record takes a few seconds to settle. Then run:\n  npm run call-cost -- ${conversationId}`);
+  process.exit(code);
+}
+setTimeout(() => {
+  log("WARN", "hard time limit reached");
+  finish(1);
+}, HARD_LIMIT_MS).unref();
+
+try {
+  await opened;
+} catch (err) {
+  console.error(`Couldn't open the conversation: ${(err as Error).message}`);
+  finish(1);
+}
+
 let seen = 0;
 for (const [i, pcm] of audio.entries()) {
   seen = await waitForAgent(seen, 45_000);
   await sleep(800); // a natural pause before answering
+  // The agent may have started a follow-up (for example after a tool call) during the pause.
+  while (!closed && !agentIsQuiet(1000)) await sleep(100);
+  if (closed) break;
   log("SEND", `line ${i + 1} (${(pcm.length / BYTES_PER_SEC).toFixed(1)}s)`);
   pending = pcm;
-  while (pending.length) await sleep(100);
+  while (pending.length && !closed) await sleep(100);
+}
+if (closed) {
+  log("WARN", `the call ended early (${closeReason || "closed"})`);
+  finish(conversationId ? 0 : 1);
 }
 await waitForAgent(seen, 30_000, 1500); // let the agent say goodbye
-clearInterval(pump);
-ws.close();
-log("DONE", `conversation ${conversationId}`);
-console.log(`\nThe billing record takes a few seconds to settle. Then run:\n  npm run call-cost -- ${conversationId}`);
+finish(0);

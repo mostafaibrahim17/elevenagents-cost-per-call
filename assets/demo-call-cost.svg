@@ -5,7 +5,7 @@
   <circle cx="22" cy="17" r="6" fill="#ff5f56"/>
   <circle cx="42" cy="17" r="6" fill="#ffbd2e"/>
   <circle cx="62" cy="17" r="6" fill="#27c93f"/>
-  <text x="380" y="22" fill="#8b949e" font-size="13" text-anchor="middle">npm run call-cost</text>
+  <text x="380" y="22" fill="#8b949e" font-size="13" text-anchor="middle">npm run call-cost  (condensed)</text>
 
   <g font-size="14">
     <text x="24" y="66" fill="#c9d1d9">$ npm run call-cost -- conv_7401… --provider-llm 0.006</text>
@@ -21,7 +21,7 @@
     <text x="40" y="292" fill="#8b949e">                       fresh   cached   output</text>
     <text x="40" y="316" fill="#c9d1d9">initiated (billed)     14833     4416      603</text>
     <text x="40" y="340" fill="#c9d1d9">irreversible (heard)    9403     2953      519</text>
-    <text x="40" y="366" fill="#f87171">Billed input is 58% above what the caller heard.</text>
+    <text x="40" y="366" fill="#f87171">Billed fresh input is 58% above what the caller heard.</text>
 
     <text x="24" y="406" fill="#fbbf24" font-weight="700">3 · Same call on the raw APIs</text>
     <text x="40" y="432" fill="#c9d1d9">stt $0.010 · tts $0.047 · llm $0.006 · phone $0.017</text>

@@ -5,7 +5,7 @@
   <circle cx="22" cy="17" r="6" fill="#ff5f56"/>
   <circle cx="42" cy="17" r="6" fill="#ffbd2e"/>
   <circle cx="62" cy="17" r="6" fill="#27c93f"/>
-  <text x="380" y="22" fill="#8b949e" font-size="13" text-anchor="middle">npm run estimate  (no API key)</text>
+  <text x="380" y="22" fill="#8b949e" font-size="13" text-anchor="middle">npm run estimate  (no API key, condensed)</text>
 
   <g font-size="14">
     <text x="24" y="66" fill="#c9d1d9">$ npm run estimate</text>

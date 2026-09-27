@@ -3,6 +3,7 @@
 //   npm run estimate
 //   npm run estimate -- --prompt agent/prompt.md --pages 12 --rag
 //   npm run estimate -- --prompt-length 6000 --minutes 4
+//   npm run estimate -- --all          (every model, not just the six in the article)
 import { readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
 import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
@@ -20,14 +21,21 @@ const { values } = parseArgs({
 });
 
 const promptLength = Number(values["prompt-length"] ?? readFileSync(values.prompt!, "utf8").length);
+const pages = Number(values.pages);
 const minutes = Number(values.minutes);
+for (const [flag, n] of [["--prompt-length", promptLength], ["--pages", pages], ["--minutes", minutes]] as const) {
+  if (!Number.isFinite(n) || n < 0) {
+    console.error(`${flag} must be a number of 0 or more`);
+    process.exit(1);
+  }
+}
 const models = ["gemini-2.5-flash", "gpt-5-mini", "gemini-3.7-flash", "claude-haiku-4-5", "gpt-5.1", "claude-sonnet-5"];
 
 // The calculator endpoint answers without authentication, so any key string works here.
 const el = new ElevenLabsClient({ apiKey: process.env.ELEVENLABS_API_KEY || "none" });
 const res = await el.conversationalAi.llmUsage.calculate({
   promptLength,
-  numberOfPages: Number(values.pages),
+  numberOfPages: pages,
   ragEnabled: values.rag,
 });
 
@@ -49,4 +57,4 @@ const rows = res.llmPrices
 console.log(`Prompt ${promptLength} chars, ${values.pages} KB pages, RAG ${values.rag ? "on" : "off"}, ${minutes}-minute call`);
 console.log(`All-in adds the platform at $${RATES.platformPerMin}/min and a Twilio inbound line at $${RATES.twilioInboundPerMin}/min.`);
 console.table(rows);
-console.log("The calculator is a planning estimate. On the measured test call it ran about two thirds above the real LLM cost.");
+console.log("A planning estimate. On the measured call it ran about two thirds high.");
