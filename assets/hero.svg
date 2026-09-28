@@ -30,7 +30,7 @@
 
     <rect x="240" y="0" width="210" height="40" rx="8" fill="#2a2210" stroke="#fbbf24" stroke-width="2"/>
     <circle cx="262" cy="20" r="7" fill="#fbbf24"/><text x="280" y="26" fill="#fde68a" font-size="15" font-weight="700">LLM  $0.0026</text>
-    <text x="250" y="72" fill="#9fb6c9" font-size="13">the only line you control</text>
+    <text x="250" y="72" fill="#9fb6c9" font-size="13">the line you change most</text>
 
     <line x1="470" y1="45" x2="560" y2="45" stroke="#7c8aa5" stroke-width="2" marker-end="url(#ah)"/>
 
