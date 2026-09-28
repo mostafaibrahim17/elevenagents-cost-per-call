@@ -67,7 +67,7 @@ npm run create-agent                      # prints the agent ID
 npm run scripted-call -- <agent_id>       # prints the conversation ID
 
 # 4. Read the bill back, and re-price it from the raw APIs.
-#    0.006 is the LLM line at Google's own Gemini 2.5 Flash list price.
+#    0.006 is this test call's LLM line at Google's Gemini 2.5 Flash list price. Use your own call's figure.
 npm run call-cost -- <conversation_id> --provider-llm 0.006
 
 # 5. Once real traffic arrives, roll up a week

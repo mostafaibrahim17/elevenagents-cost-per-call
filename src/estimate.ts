@@ -54,7 +54,7 @@ const rows = res.llmPrices
     };
   });
 
-console.log(`Prompt ${promptLength} chars, ${values.pages} KB pages, RAG ${values.rag ? "on" : "off"}, ${minutes}-minute call`);
+console.log(`Prompt ${promptLength} chars, ${values.pages} knowledge-base pages, RAG ${values.rag ? "on" : "off"}, ${minutes}-minute call`);
 console.log(`All-in adds the platform at $${RATES.platformPerMin}/min and a Twilio inbound line at $${RATES.twilioInboundPerMin}/min.`);
 console.table(rows);
 console.log("A planning estimate. On the measured call it ran about two thirds high.");
