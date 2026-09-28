@@ -5,7 +5,7 @@ import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
 if (existsSync(".env")) process.loadEnvFile(".env");
 
 // List prices used for the all-in and raw-API figures. Check them before you
-// rely on them: they were read from the live pricing pages on 26 Sep 2026.
+// rely on them: they were read from the live pricing pages on 28 Sep 2026.
 export const RATES = {
   platformPerMin: 0.08, // ElevenAgents additional minute, every plan
   twilioInboundPerMin: 0.0085, // Twilio US local inbound, billed in whole minutes
