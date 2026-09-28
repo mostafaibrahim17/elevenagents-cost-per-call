@@ -10,7 +10,7 @@ export const RATES = {
   platformPerMin: 0.08, // ElevenAgents additional minute, every plan
   twilioInboundPerMin: 0.0085, // Twilio US local inbound, billed in whole minutes
   scribeRealtimePerHour: 0.39, // Scribe v2 Realtime
-  flashTtsPer1kChars: 0.05, // Flash text to speech
+  flashTtsPer1kChars: 0.04, // Flash text to speech
 };
 
 export function client(): ElevenLabsClient {

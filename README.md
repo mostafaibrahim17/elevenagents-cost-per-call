@@ -22,7 +22,7 @@ These scripts **estimate** that bill before you deploy, **read it back** from th
 
 ![Billing flow: the caller's audio passes through the phone line, then speech to text, the LLM, and text to speech. Speech to text and text to speech sit inside the $0.08 platform minute. The LLM and the phone line are billed on top.](assets/billing-flow.png)
 
-> **Numbers from a handful of calls.** The cost figures come from one scripted call on a fresh account, so read them as a worked example, not a benchmark. Three more runs of the same script cost within a few cents of it. The token ratios moved more. Billed fresh input ran 58%, 51%, 38% and 71% above what the caller heard, with no turn flagged as interrupted in any of them, and cache reads were 23% to 35% of billed input. Point `npm run report` at a week of your own traffic before you put a number in a budget.
+> **Numbers from a handful of calls.** The cost figures come from one scripted call on a fresh account, so read them as a worked example, not a benchmark. Three more runs with this repo's TypeScript `scripted-call` cost within a few cents of it. The token ratios moved more. Billed fresh input ran 58%, 51%, 38% and 71% above what the caller heard, with no turn flagged as interrupted in any of them, and cache reads were 23% to 35% of billed input. Point `npm run report` at a week of your own traffic before you put a number in a budget.
 
 ## Contents
 
@@ -84,12 +84,12 @@ The scripts load `.env` automatically, or read `ELEVENLABS_API_KEY` from your en
 
 `npm run call-cost` reads the real bill back and breaks it down. The full output also prints the ElevenLabs total, the per-generation token table, and any silence or burst charges.
 
-![Condensed output of npm run call-cost: platform $0.123 at list rate, LLM $0.0026, phone line $0.017, all in $0.143. Billed fresh input is 58% above what the caller heard. The same call on the raw APIs is $0.080.](assets/demo-call-cost.svg)
+![Condensed output of npm run call-cost: platform $0.123 at list rate, LLM $0.0026, phone line $0.017, all in $0.143. Billed fresh input is 58% above what the caller heard. The same call on the raw APIs is $0.070.](assets/demo-call-cost.svg)
 
 - **The platform minute is most of the bill.** At list rate it's $0.123 of the $0.143. With the cheapest model the LLM is 2%.
-- **You're billed on generations the caller didn't hear.** The record reports LLM usage twice. The billed price matches `initiatedGeneration`, whose fresh input was 58% above `irreversibleGeneration` on this call, the block that matches the transcript. Across four calls the gap ran 38% to 71%, and no turn was flagged as interrupted in any of them, so it isn't the scripted customer talking over the agent.
+- **You're billed on generations the caller didn't hear.** The record reports LLM usage twice. The billed price matches `initiatedGeneration`, whose fresh input was 58% above `irreversibleGeneration` on this call, the block that matches the transcript. Across four calls the gap ran 38% to 71%, and no turn was flagged as interrupted in any of them, so the record doesn't say where the extra generations came from.
 - **Caching happens by itself, but late.** Cache reads were 23% of billed input on this call, 23% to 35% across four, and appeared only on the last two of seven generations.
-- **The raw APIs cost less per call, not less overall.** The same call built from Scribe, Flash, and Gemini comes to $0.080. The gap of about 4 cents a minute pays for turn-taking, streaming, tool calling, and hosting.
+- **The raw APIs cost less per call, not less overall.** The same call built from Scribe, Flash, and Gemini comes to $0.070. The gap of about 5 cents a minute pays for turn-taking, streaming, tool calling, and hosting.
 
 ![Cost by model: six stacked bars for a four-minute call, each with the $0.32 platform minute and $0.034 phone line fixed, and the LLM rising from $0.011 for Gemini 2.5 Flash to $0.168 for Claude Sonnet 5](assets/model-cost-comparison.png)
 
@@ -100,7 +100,7 @@ The scripts load `.env` automatically, or read `ELEVENLABS_API_KEY` from your en
 - **Silence and burst minutes are listed separately.** Voice minutes are priced at the $0.08 list rate. If the record bills other platform categories, such as silence at 5% of the rate or burst minutes, `call-cost` lists them as the record priced them and adds them to the platform line.
 - **The phone line isn't in `costFiat`.** It's your carrier's charge. The scripts estimate it at Twilio's US inbound rate, rounded up to whole minutes as Twilio bills it. A WebSocket test call doesn't incur it.
 - **`ttsUsage` and `asrUsage` are analytics fields.** The docs say so. They're what make the raw-API comparison possible, but they aren't billing lines.
-- **Knowledge bases change everything past about 55 pages.** At 12 pages the RAG flag makes no difference to the estimate. At 100 pages without RAG, Sonnet 5 reaches $4.34 a call. With RAG it's $1.21. Run `npm run estimate -- --pages <n>` with and without `--rag` for your own size.
+- **Past about 55 pages, the knowledge base costs more than the model.** At 12 pages the RAG flag makes no difference to the estimate. At 100 pages without RAG, Sonnet 5 reaches $4.34 a call. With RAG it's $1.21. Run `npm run estimate -- --pages <n>` with and without `--rag` for your own size.
 - **English agents need a Flash v2 or Turbo v2 voice model.** The API rejects Flash v2.5 for an English agent, which is why `create-agent` uses `eleven_flash_v2`.
 - **Why the SDK and not the CLI.** `@elevenlabs/cli` manages agents as config files, which suits teams that keep agents in git. This repo creates its one test agent with the SDK so the whole project runs on a single dependency.
 - **Prices move.** The list prices for the all-in and raw-API figures live in `RATES` in `src/lib/cost.ts`, as read on 26 September 2026. Check them before you rely on them.

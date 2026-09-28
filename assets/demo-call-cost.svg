@@ -24,7 +24,7 @@
     <text x="40" y="366" fill="#f87171">Billed fresh input is 58% above what the caller heard.</text>
 
     <text x="24" y="406" fill="#fbbf24" font-weight="700">3 · Same call on the raw APIs</text>
-    <text x="40" y="432" fill="#c9d1d9">stt $0.010 · tts $0.047 · llm $0.006 · phone $0.017</text>
-    <text x="40" y="456" fill="#4ade80">total $0.080 · platform gap $0.041 per minute</text>
+    <text x="40" y="432" fill="#c9d1d9">stt $0.010 · tts $0.037 · llm $0.006 · phone $0.017</text>
+    <text x="40" y="456" fill="#4ade80">total $0.070 · platform gap $0.047 per minute</text>
   </g>
 </svg>
