@@ -11,7 +11,7 @@
     <text x="24" y="66" fill="#c9d1d9">$ npm run estimate</text>
     <text x="24" y="92" fill="#8b949e">Prompt 4916 chars, 0 knowledge-base pages, RAG off, 4-minute call</text>
 
-    <text x="40" y="128" fill="#8b949e">model               per min   LLM, 4 min   all-in   LLM share</text>
+    <text x="40" y="128" fill="#8b949e">model               per min   LLM, 4 min   est.     LLM share</text>
     <text x="40" y="156" fill="#c9d1d9">gemini-2.5-flash    $0.0028     $0.011     $0.37       3%</text>
     <text x="40" y="180" fill="#c9d1d9">gpt-5-mini          $0.0050     $0.020     $0.37       5%</text>
     <text x="40" y="204" fill="#c9d1d9">gemini-3.7-flash    $0.0143     $0.057     $0.41      14%</text>
