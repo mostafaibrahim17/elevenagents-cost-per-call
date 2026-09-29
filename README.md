@@ -88,7 +88,7 @@ The scripts load `.env` automatically, or read `ELEVENLABS_API_KEY` from your en
 
 - **The platform minute is most of the cost.** At list rate it's $0.123 of the estimated $0.143. With the cheapest model the LLM is 2%.
 - **Caching happens by itself.** Cache reads were 23% of input tokens on the test call, with nothing configured.
-- **The raw APIs cost less per call, not less overall.** Priced from Scribe, Flash, and Gemini list rates, the same usage comes to an estimated $0.070. The gap of about 5 cents a minute pays for turn-taking, streaming, tool calling, and hosting.
+- **The raw APIs cost less per call, not less overall.** Priced from Scribe, Flash, and Gemini list rates, the same usage comes to an estimated $0.070. The gap of about 4.7 cents a minute pays for turn-taking, streaming, tool calling, and hosting.
 
 ![Cost by model: six stacked bars for a four-minute call, each with the $0.32 platform minute and $0.034 phone line fixed, and the LLM rising from $0.011 for Gemini 2.5 Flash to $0.168 for Claude Sonnet 5](assets/model-cost-comparison.png)
 
