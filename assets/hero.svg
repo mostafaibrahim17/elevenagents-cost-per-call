@@ -26,7 +26,7 @@
     <rect x="0" y="0" width="210" height="40" rx="8" fill="#132234" stroke="#2b3d55"/>
     <circle cx="22" cy="20" r="7" fill="#60a5fa"/><text x="40" y="26" fill="#dfe8f5" font-size="15">Platform  $0.123</text>
     <rect x="0" y="50" width="210" height="40" rx="8" fill="#132234" stroke="#2b3d55"/>
-    <circle cx="22" cy="70" r="7" fill="#c4b5fd"/><text x="40" y="76" fill="#dfe8f5" font-size="15">Phone line  $0.017</text>
+    <circle cx="22" cy="70" r="7" fill="#c4b5fd"/><text x="40" y="76" fill="#dfe8f5" font-size="15">Phone (est.)  $0.017</text>
 
     <rect x="240" y="0" width="210" height="40" rx="8" fill="#2a2210" stroke="#fbbf24" stroke-width="2"/>
     <circle cx="262" cy="20" r="7" fill="#fbbf24"/><text x="280" y="26" fill="#fde68a" font-size="15" font-weight="700">LLM  $0.0026</text>
@@ -36,7 +36,7 @@
 
     <rect x="570" y="0" width="230" height="90" rx="12" fill="#0f2b33" stroke="#2dd4bf" stroke-width="2"/>
     <text x="685" y="42" fill="#ffffff" font-size="30" font-weight="800" text-anchor="middle">$0.143</text>
-    <text x="685" y="68" fill="#9fb6c9" font-size="13" text-anchor="middle">one real 92-second call, all in</text>
+    <text x="685" y="68" fill="#9fb6c9" font-size="13" text-anchor="middle">estimated, 92-second test call</text>
 
     <text x="830" y="30" fill="#8fa3bf" font-size="14">npm run estimate</text>
     <text x="830" y="54" fill="#8fa3bf" font-size="14">npm run call-cost</text>

@@ -9,22 +9,22 @@
 
   <g font-size="14">
     <text x="24" y="66" fill="#c9d1d9">$ npm run call-cost -- conv_7401… --provider-llm 0.006</text>
-    <text x="24" y="92" fill="#8b949e">Conversation conv_7401…: 92s, 1.54 billed minutes</text>
+    <text x="24" y="92" fill="#8b949e">Conversation conv_7401…: 92s, 1.5372 billed minutes</text>
 
-    <text x="24" y="128" fill="#fbbf24" font-weight="700">1 · The bill</text>
-    <text x="40" y="154" fill="#c9d1d9">Platform (list rate)</text><text x="330" y="154" fill="#c9d1d9">$0.123</text><text x="430" y="154" fill="#8b949e">record valued it at $0.102</text>
-    <text x="40" y="178" fill="#c9d1d9">LLM</text><text x="330" y="178" fill="#fbbf24">$0.0026</text><text x="430" y="178" fill="#8b949e">billed on initiated</text>
-    <text x="40" y="202" fill="#c9d1d9">Phone line (est.)</text><text x="330" y="202" fill="#c9d1d9">$0.017</text><text x="430" y="202" fill="#8b949e">Twilio, whole minutes</text>
-    <text x="40" y="226" fill="#ffffff" font-weight="700">All in</text><text x="330" y="226" fill="#4ade80" font-weight="700">$0.143</text><text x="430" y="226" fill="#8b949e">$0.093 per minute</text>
+    <text x="24" y="128" fill="#fbbf24" font-weight="700">1 · Measured and estimated</text>
+    <text x="40" y="154" fill="#c9d1d9">Platform</text><text x="250" y="154" fill="#8b949e">record: 1.5372 min x $0.08</text><text x="620" y="154" fill="#c9d1d9">$0.123</text>
+    <text x="40" y="178" fill="#c9d1d9">LLM</text><text x="250" y="178" fill="#8b949e">record: llm_price</text><text x="620" y="178" fill="#fbbf24">$0.0026</text>
+    <text x="40" y="202" fill="#c9d1d9">Phone line</text><text x="250" y="202" fill="#8b949e">estimate: 2 min x $0.0085</text><text x="620" y="202" fill="#c9d1d9">$0.017</text>
+    <text x="40" y="226" fill="#ffffff" font-weight="700">Estimated total</text><text x="250" y="226" fill="#8b949e">$0.093 per minute</text><text x="620" y="226" fill="#4ade80" font-weight="700">$0.143</text>
+    <text x="40" y="252" fill="#8b949e">Recorded cost_fiat: $0.105 (Free plan valuation). Budget at list rate.</text>
 
-    <text x="24" y="266" fill="#fbbf24" font-weight="700">2 · LLM tokens</text>
-    <text x="40" y="292" fill="#8b949e">                       fresh   cached   output</text>
-    <text x="40" y="316" fill="#c9d1d9">initiated (billed)     14833     4416      603</text>
-    <text x="40" y="340" fill="#c9d1d9">irreversible (heard)    9403     2953      519</text>
-    <text x="40" y="366" fill="#f87171">Billed fresh input is 58% above what the caller heard.</text>
+    <text x="24" y="292" fill="#fbbf24" font-weight="700">2 · LLM tokens in the record</text>
+    <text x="40" y="318" fill="#8b949e">fresh   cached   output</text>
+    <text x="40" y="342" fill="#c9d1d9">14833     4416      603</text>
+    <text x="40" y="366" fill="#c9d1d9">Cache reads: 22.9% of input tokens</text>
 
-    <text x="24" y="406" fill="#fbbf24" font-weight="700">3 · Same call on the raw APIs</text>
+    <text x="24" y="406" fill="#fbbf24" font-weight="700">3 · Estimate at raw API list rates</text>
     <text x="40" y="432" fill="#c9d1d9">stt $0.010 · tts $0.037 · llm $0.006 · phone $0.017</text>
-    <text x="40" y="456" fill="#4ade80">total $0.070 · platform gap $0.047 per minute</text>
+    <text x="40" y="456" fill="#4ade80">total $0.070 · gap $0.047 per minute</text>
   </g>
 </svg>

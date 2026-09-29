@@ -45,16 +45,14 @@ export type CallCost = {
   platformAtListUsd: number; // billed minutes at the $0.08 list rate
   llmUsd: number | null;
   elevenLabsTotalUsd: number | null; // cost_fiat: platform + LLM, no phone line
-  phoneLineUsd: number; // Twilio inbound estimate, whole minutes
-  allInAtListUsd: number;
-  tokens: {
-    initiated: ReturnType<typeof sumTokens>; // what you are billed on
-    irreversible: ReturnType<typeof sumTokens>; // what the caller heard
-  };
+  phoneMinutes: number; // call length rounded up to whole minutes, as Twilio bills
+  phoneLineUsd: number; // estimate at Twilio's inbound list rate, not read from the record
+  onPhoneNetwork: boolean; // false for WebSocket calls, where no carrier is involved
+  estimatedTotalUsd: number; // platform at list rate + LLM as recorded + phone line estimate
+  llmTokens: ReturnType<typeof sumTokens>; // the record's initiated_generation block
   cachedInputShare: number | null;
   ttsCharacters: number | null;
   asrSeconds: number | null;
-  perGeneration: { fresh: number; cached: number; output: number }[];
 };
 
 // Everything that matters about one call's bill, read from the conversation details endpoint.
@@ -70,17 +68,11 @@ export async function callCost(conversationId: string, el: ElevenLabsClient = cl
     .filter(([k]) => k !== "voice")
     .map(([category, v]) => ({ category, quantity: v.quantity ?? 0, usd: v.price ?? 0 }));
   const otherUsd = otherPlatformCategories.reduce((n, o) => n + o.usd, 0);
-  const initiated = sumTokens(c.llmUsage?.initiatedGeneration?.modelUsage);
-  const irreversible = sumTokens(c.llmUsage?.irreversibleGeneration?.modelUsage);
-  const phoneLineUsd = Math.ceil(m.callDurationSecs / 60) * RATES.twilioInboundPerMin;
+  const llmTokens = sumTokens(c.llmUsage?.initiatedGeneration?.modelUsage);
+  const phoneMinutes = Math.ceil(m.callDurationSecs / 60);
+  const phoneLineUsd = phoneMinutes * RATES.twilioInboundPerMin;
   const platformAtListUsd = billedMinutes * RATES.platformPerMin + otherUsd;
-  const perGeneration = (conv.transcript ?? [])
-    .filter((t: any) => t.llmUsage?.modelUsage)
-    .map((t: any) => {
-      const s = sumTokens(t.llmUsage.modelUsage);
-      return { fresh: s.fresh, cached: s.cached, output: s.output };
-    });
-  const allInput = initiated.fresh + initiated.cached;
+  const allInput = llmTokens.fresh + llmTokens.cached;
   return {
     conversationId,
     seconds: m.callDurationSecs,
@@ -90,13 +82,14 @@ export async function callCost(conversationId: string, el: ElevenLabsClient = cl
     platformAtListUsd,
     llmUsd: c.llmPrice ?? null,
     elevenLabsTotalUsd: m.costFiat ?? null,
+    phoneMinutes,
     phoneLineUsd,
-    allInAtListUsd: platformAtListUsd + (c.llmPrice ?? 0) + phoneLineUsd,
-    tokens: { initiated, irreversible },
-    cachedInputShare: allInput ? initiated.cached / allInput : null,
+    onPhoneNetwork: m.phoneCall != null,
+    estimatedTotalUsd: platformAtListUsd + (c.llmPrice ?? 0) + phoneLineUsd,
+    llmTokens,
+    cachedInputShare: allInput ? llmTokens.cached / allInput : null,
     ttsCharacters: c.ttsUsage?.totalCharacters ?? null,
     asrSeconds: c.asrUsage?.totalAudioInputSeconds ?? null,
-    perGeneration,
   };
 }
 

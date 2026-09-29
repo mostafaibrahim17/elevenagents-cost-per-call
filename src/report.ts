@@ -39,7 +39,7 @@ if (!ids.length) {
 
 type Row = {
   conversation: string; minutes: number; platform_list: number; llm: number; phone_est: number;
-  all_in: number; cached_share: number | null; fresh_billed_over_heard: number | null; tts_chars: number | null;
+  est_total: number; cached_share: number | null; tts_chars: number | null;
 };
 const rows: Row[] = [];
 const skipped: string[] = [];
@@ -58,9 +58,8 @@ for (const id of ids) {
     platform_list: +c.platformAtListUsd.toFixed(4),
     llm: +(c.llmUsd ?? 0).toFixed(5),
     phone_est: +c.phoneLineUsd.toFixed(4),
-    all_in: +c.allInAtListUsd.toFixed(4),
+    est_total: +c.estimatedTotalUsd.toFixed(4),
     cached_share: c.cachedInputShare == null ? null : +c.cachedInputShare.toFixed(2),
-    fresh_billed_over_heard: c.tokens.irreversible.fresh ? +(c.tokens.initiated.fresh / c.tokens.irreversible.fresh).toFixed(2) : null,
     tts_chars: c.ttsCharacters,
   });
 }
@@ -71,9 +70,9 @@ if (!rows.length) process.exit(0);
 console.table(rows);
 const sum = (k: keyof Row) => rows.reduce((a, r) => a + (Number(r[k]) || 0), 0);
 const minutes = sum("minutes");
-const perMinute = minutes > 0 ? `$${(sum("all_in") / minutes).toFixed(3)} per minute` : "n/a per minute";
-console.log(`${rows.length} calls, ${minutes.toFixed(1)} minutes, $${sum("all_in").toFixed(2)} all in, ${perMinute}`);
-if (sum("all_in") > 0) console.log(`LLM is ${((100 * sum("llm")) / sum("all_in")).toFixed(1)}% of the all-in cost.`);
+const perMinute = minutes > 0 ? `$${(sum("est_total") / minutes).toFixed(3)} per minute` : "n/a per minute";
+console.log(`${rows.length} calls, ${minutes.toFixed(1)} minutes, $${sum("est_total").toFixed(2)} estimated total, ${perMinute}`);
+if (sum("est_total") > 0) console.log(`LLM is ${((100 * sum("llm")) / sum("est_total")).toFixed(1)}% of the estimated total. The phone line is estimated at Twilio list rate.`);
 
 if (values.csv) {
   mkdirSync(dirname(values.csv), { recursive: true });
