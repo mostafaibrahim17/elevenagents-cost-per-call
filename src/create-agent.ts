@@ -1,7 +1,7 @@
 // Create the test agent used in the article: a support line with one webhook tool.
 // Creating an agent and a tool costs nothing. Calls to it use your plan's minutes.
 // The ElevenLabs CLI (@elevenlabs/cli) can manage the same agent as config files.
-// This uses the SDK so the whole project runs on one dependency.
+// This uses the SDK so the project needs only the SDK, plus ws for the WebSocket call.
 //
 //   npm run create-agent
 //   npm run create-agent -- --llm claude-sonnet-5
